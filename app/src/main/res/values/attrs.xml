@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ShapeWidthView">
+        <attr name="max_value" format="float" />
+        <attr name="min_value" format="float" />
+        <attr name="current_value" format="float" />
+        <attr name="board_color" format="color" />
+        <attr name="fill_color" format="color" />
+    </declare-styleable>
+</resources>
