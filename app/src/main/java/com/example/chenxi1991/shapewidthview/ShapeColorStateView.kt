@@ -190,23 +190,23 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
             super.applyTransformation(interpolatedTime, t)
             when (mCurrentState) {
                 CurrentState.SHOW_BOARD -> {
-                    mBoardX--
+                    mBoardX-=2
                     if (mBoardX < mLeftTopX) mBoardX = mLeftTopX
-                    mBoardY--
+                    mBoardY-=2
                     if (mBoardY < mLeftTopY) mBoardY = mLeftTopY
-                    mFillX++
+                    mFillX+=2
                     if (mFillX > mRightBottomX) mFillX = mRightBottomX
-                    mFillY++
+                    mFillY+=2
                     if (mFillY > mRightBottomY) mFillY = mRightBottomY
                 }
                 CurrentState.SHOW_FILL -> {
-                    mBoardX++
+                    mBoardX+=2
                     if (mBoardX > mRightBottomX) mBoardX = mRightBottomX
-                    mBoardY++
+                    mBoardY+=2
                     if (mBoardY > mRightBottomY) mBoardY = mRightBottomY
-                    mFillX--
+                    mFillX-=2
                     if (mFillX < mLeftTopX) mFillX = mLeftTopX
-                    mFillY--
+                    mFillY-=2
                     if (mFillY < mLeftTopY) mFillY = mLeftTopY
                 }
             }
