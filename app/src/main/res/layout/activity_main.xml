@@ -49,5 +49,6 @@
         android:layout_height="60px"
         app:ss_board_color="@color/colorAccent"
         app:ss_current_state="0"
-        app:ss_fill_color="@color/colorPrimary" />
+        app:ss_fill_color="@color/colorPrimary"
+        app:ss_fill_enabled="false" />
 </LinearLayout>

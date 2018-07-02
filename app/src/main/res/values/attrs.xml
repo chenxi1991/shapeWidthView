@@ -17,6 +17,7 @@
     <declare-styleable name="ShapeColorStateView">
         <attr name="ss_board_color" format="color" />
         <attr name="ss_fill_color" format="color" />
+        <attr name="ss_fill_enabled" format="boolean" />
         <attr name="ss_current_state" format="integer" />
     </declare-styleable>
 </resources>

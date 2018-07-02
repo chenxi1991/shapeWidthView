@@ -41,6 +41,8 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
     private var mFillY = 0f
     private var inited = AtomicBoolean(false)
 
+    private var mFillEnabled = AtomicBoolean(true)
+
     private var animation: SwitchAnimation? = null
 
     private var mCurrentState = CurrentState.SHOW_BOARD
@@ -55,11 +57,13 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeColorStateView)
         mBoardColor = t.getColor(R.styleable.ShapeColorStateView_ss_board_color, Color.BLACK)
         mFillColor = t.getColor(R.styleable.ShapeColorStateView_ss_fill_color, Color.TRANSPARENT)
-        var mStateTemp = t.getInteger(R.styleable.ShapeColorStateView_ss_current_state, 0)
+        val mStateTemp = t.getInteger(R.styleable.ShapeColorStateView_ss_current_state, 0)
         when (mStateTemp) {
             0 -> mCurrentState = CurrentState.SHOW_BOARD
             1 -> mCurrentState = CurrentState.SHOW_FILL
         }
+        val mFillEnableTemp = t.getBoolean(R.styleable.ShapeColorStateView_ss_fill_enabled, true)
+        mFillEnabled.set(mFillEnableTemp)
         t.recycle()
 
 
@@ -128,14 +132,32 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun drawFill(canvas: Canvas?, x: Float, y: Float, r: Float) {
-        mPaint.style = Paint.Style.FILL
-        mPaint.color = mFillColor
-        canvas?.drawCircle(x, y, r, mPaint)
+        if (mFillEnabled.get()) {
+            mPaint.style = Paint.Style.FILL
+            mPaint.color = mFillColor
+            canvas?.drawCircle(x, y, r, mPaint)
 
-        mPaint.style = Paint.Style.STROKE
-        mPaint.color = mEdgeColor
-        mPaint.strokeWidth = 1f
-        canvas?.drawCircle(x, y, r, mPaint)
+            mPaint.style = Paint.Style.STROKE
+            mPaint.color = mEdgeColor
+            mPaint.strokeWidth = 1f
+            canvas?.drawCircle(x, y, r, mPaint)
+        } else {
+            mPaint.style = Paint.Style.STROKE
+            mPaint.color = mEdgeColor
+            mPaint.strokeWidth = 1f
+            canvas?.drawCircle(x, y, r, mPaint)
+
+            val temp = r / Math.sqrt(2.0)
+            val startX = x + temp
+            val startY = y - temp
+            val endX = x - temp
+            val endy = y + temp
+            val path = Path()
+            path.moveTo(startX.toFloat(), startY.toFloat())
+            path.lineTo(endX.toFloat(), endy.toFloat())
+            mPaint.color = Color.RED
+            canvas?.drawPath(path, mPaint)
+        }
     }
 
     private fun drawLeftBottomArrow(canvas: Canvas?) {
@@ -178,6 +200,7 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
 
     fun setFillColor(color: Int) {
         this.mFillColor = color
+        mFillEnabled.set(true)
         invalidate()
     }
 
@@ -185,28 +208,37 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
         return mFillColor
     }
 
+    fun setFillColorEnable(enabled: Boolean) {
+        mFillEnabled.set(enabled)
+        invalidate()
+    }
+
+    fun getFillColorEnabled(): Boolean {
+        return mFillEnabled.get()
+    }
+
     inner class SwitchAnimation : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
             super.applyTransformation(interpolatedTime, t)
             when (mCurrentState) {
                 CurrentState.SHOW_BOARD -> {
-                    mBoardX-=2
+                    mBoardX -= 2
                     if (mBoardX < mLeftTopX) mBoardX = mLeftTopX
-                    mBoardY-=2
+                    mBoardY -= 2
                     if (mBoardY < mLeftTopY) mBoardY = mLeftTopY
-                    mFillX+=2
+                    mFillX += 2
                     if (mFillX > mRightBottomX) mFillX = mRightBottomX
-                    mFillY+=2
+                    mFillY += 2
                     if (mFillY > mRightBottomY) mFillY = mRightBottomY
                 }
                 CurrentState.SHOW_FILL -> {
-                    mBoardX+=2
+                    mBoardX += 2
                     if (mBoardX > mRightBottomX) mBoardX = mRightBottomX
-                    mBoardY+=2
+                    mBoardY += 2
                     if (mBoardY > mRightBottomY) mBoardY = mRightBottomY
-                    mFillX-=2
+                    mFillX -= 2
                     if (mFillX < mLeftTopX) mFillX = mLeftTopX
-                    mFillY-=2
+                    mFillY -= 2
                     if (mFillY < mLeftTopY) mFillY = mLeftTopY
                 }
             }
