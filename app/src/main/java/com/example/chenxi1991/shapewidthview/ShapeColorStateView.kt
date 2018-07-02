@@ -7,6 +7,9 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.Transformation
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     companion object {
@@ -27,12 +30,28 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
     private var mViewSize = 0f
     private var mCircleRadius = 0f
 
+    private var mLeftTopX = 0f
+    private var mLeftTopY = 0f
+    private var mRightBottomX = 0f
+    private var mRightBottomY = 0f
+
+    private var mBoardX = 0f
+    private var mBoardY = 0f
+    private var mFillX = 0f
+    private var mFillY = 0f
+    private var inited = AtomicBoolean(false)
+
+    private var animation: SwitchAnimation? = null
+
     private var mCurrentState = CurrentState.SHOW_BOARD
 
     var mStateChangeCallBack: StateChangeCallBack? = null
 
+
     init {
         mPaint.isAntiAlias = true
+        animation = SwitchAnimation()
+        animation?.duration = 300
         val t = context.obtainStyledAttributes(attrs, R.styleable.ShapeColorStateView)
         mBoardColor = t.getColor(R.styleable.ShapeColorStateView_ss_board_color, Color.BLACK)
         mFillColor = t.getColor(R.styleable.ShapeColorStateView_ss_fill_color, Color.TRANSPARENT)
@@ -49,29 +68,46 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
                 CurrentState.SHOW_BOARD -> CurrentState.SHOW_FILL
                 CurrentState.SHOW_FILL -> CurrentState.SHOW_BOARD
             }
-            invalidate()
             mStateChangeCallBack?.onStateChange(mCurrentState, if (mCurrentState == CurrentState.SHOW_BOARD) mBoardColor else mFillColor)
+            this.startAnimation(animation)
         }
     }
 
     override fun onDraw(canvas: Canvas?) {
-        mViewSize = if (width > height) height.toFloat() else width.toFloat()
-        mCircleRadius = mViewSize * 0.6f / 2 - 1f
+        if (!inited.get()) {
+            mViewSize = if (width > height) height.toFloat() else width.toFloat()
+            mCircleRadius = mViewSize * 0.6f / 2 - 1f
 
-        val mLeftTopX = mViewSize * 0.6f / 2 + 3f
-        val mLeftTopY = mLeftTopX
+            mLeftTopX = mViewSize * 0.6f / 2 + 3f
+            mLeftTopY = mLeftTopX
 
-        val mRightBottomX = mViewSize - mLeftTopX
-        val mRightBottomY = mViewSize - mLeftTopY
+            mRightBottomX = mViewSize - mLeftTopX
+            mRightBottomY = mViewSize - mLeftTopY
+            when (mCurrentState) {
+                CurrentState.SHOW_BOARD -> {
+                    mBoardX = mLeftTopX
+                    mBoardY = mLeftTopY
+                    mFillX = mRightBottomX
+                    mFillY = mRightBottomY
+                }
+                CurrentState.SHOW_FILL -> {
+                    mFillX = mLeftTopX
+                    mFillY = mLeftTopY
+                    mBoardX = mRightBottomX
+                    mBoardY = mRightBottomY
+                }
+            }
+            inited.set(true)
+        }
 
         when (mCurrentState) {
             CurrentState.SHOW_BOARD -> {
-                drawFill(canvas, mRightBottomX, mRightBottomY, mCircleRadius)
-                drawBoard(canvas, mLeftTopX, mLeftTopY, mCircleRadius)
+                drawFill(canvas, mFillX, mFillY, mCircleRadius)
+                drawBoard(canvas, mBoardX, mBoardY, mCircleRadius)
             }
             CurrentState.SHOW_FILL -> {
-                drawBoard(canvas, mRightBottomX, mRightBottomY, mCircleRadius)
-                drawFill(canvas, mLeftTopX, mLeftTopY, mCircleRadius)
+                drawBoard(canvas, mBoardX, mBoardY, mCircleRadius)
+                drawFill(canvas, mFillX, mFillY, mCircleRadius)
             }
         }
 
@@ -147,5 +183,34 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
 
     fun getFillColor(): Int {
         return mFillColor
+    }
+
+    inner class SwitchAnimation : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+            super.applyTransformation(interpolatedTime, t)
+            when (mCurrentState) {
+                CurrentState.SHOW_BOARD -> {
+                    mBoardX--
+                    if (mBoardX < mLeftTopX) mBoardX = mLeftTopX
+                    mBoardY--
+                    if (mBoardY < mLeftTopY) mBoardY = mLeftTopY
+                    mFillX++
+                    if (mFillX > mRightBottomX) mFillX = mRightBottomX
+                    mFillY++
+                    if (mFillY > mRightBottomY) mFillY = mRightBottomY
+                }
+                CurrentState.SHOW_FILL -> {
+                    mBoardX++
+                    if (mBoardX > mRightBottomX) mBoardX = mRightBottomX
+                    mBoardY++
+                    if (mBoardY > mRightBottomY) mBoardY = mRightBottomY
+                    mFillX--
+                    if (mFillX < mLeftTopX) mFillX = mLeftTopX
+                    mFillY--
+                    if (mFillY < mLeftTopY) mFillY = mLeftTopY
+                }
+            }
+            postInvalidate()
+        }
     }
 }
