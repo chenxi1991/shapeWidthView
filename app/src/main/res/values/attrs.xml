@@ -2,10 +2,15 @@
 <resources>
 
     <declare-styleable name="ShapeWidthView">
-        <attr name="max_value" format="float" />
-        <attr name="min_value" format="float" />
-        <attr name="current_value" format="float" />
-        <attr name="board_color" format="color" />
-        <attr name="fill_color" format="color" />
+        <attr name="sw_max_value" format="float" />
+        <attr name="sw_min_value" format="float" />
+        <attr name="sw_current_value" format="float" />
+        <attr name="sw_board_color" format="color" />
+        <attr name="sw_fill_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ShapeSelectedColorView">
+        <attr name="sc_board_color" format="color" />
+        <attr name="sc_fill_color" format="color" />
     </declare-styleable>
 </resources>

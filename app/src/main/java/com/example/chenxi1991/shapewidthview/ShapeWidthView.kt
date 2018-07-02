@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 
 class ShapeWidthView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
-    private val mPaint: Paint = Paint()
+    private val mPaint = Paint()
 
     //最大半径（onDraw的时候获取）
     private var mMaxFillRadius = 0f
@@ -33,11 +33,11 @@ class ShapeWidthView @JvmOverloads constructor(context: Context, attrs: Attribut
     init {
         mPaint.isAntiAlias = true
         val typeArray = context.obtainStyledAttributes(attrs, R.styleable.ShapeWidthView)
-        mMaxWidthSize = typeArray.getFloat(R.styleable.ShapeWidthView_max_value, 100f)
-        mMinWidthSize = typeArray.getFloat(R.styleable.ShapeWidthView_min_value, 0f)
-        mCurrentSize = typeArray.getFloat(R.styleable.ShapeWidthView_current_value, 50f)
-        mBoardColor = typeArray.getColor(R.styleable.ShapeWidthView_board_color, Color.GRAY)
-        mFillColor = typeArray.getColor(R.styleable.ShapeWidthView_fill_color, Color.BLACK)
+        mMaxWidthSize = typeArray.getFloat(R.styleable.ShapeWidthView_sw_max_value, 100f)
+        mMinWidthSize = typeArray.getFloat(R.styleable.ShapeWidthView_sw_min_value, 0f)
+        mCurrentSize = typeArray.getFloat(R.styleable.ShapeWidthView_sw_current_value, 50f)
+        mBoardColor = typeArray.getColor(R.styleable.ShapeWidthView_sw_board_color, Color.GRAY)
+        mFillColor = typeArray.getColor(R.styleable.ShapeWidthView_sw_fill_color, Color.BLACK)
         if (mMinWidthSize >= mMaxWidthSize || mCurrentSize < mMinWidthSize || mCurrentSize > mMaxWidthSize)
             throw IllegalArgumentException()
         typeArray.recycle()
@@ -59,14 +59,6 @@ class ShapeWidthView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun getSize(): Float {
         return mCurrentSize
-    }
-
-    fun getBoardColor(): Int {
-        return mBoardColor
-    }
-
-    fun getFillColor(): Int {
-        return mFillColor
     }
 
     fun updateSize(size: Float) {

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.example.chenxi1991.shapewidthview.ShapeWidthView
-        android:id="@+id/swv"
-        android:layout_width="48px"
-        android:layout_height="48px"
-        android:layout_centerInParent="true"
-        app:board_color="@color/colorPrimary"
-        app:current_value="50"
-        app:fill_color="@color/colorAccent"
-        app:max_value="100"
-        app:min_value="30" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/swv"
-        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
+
+        <com.example.chenxi1991.shapewidthview.ShapeWidthView
+            android:id="@+id/swv"
+            android:layout_width="48px"
+            android:layout_height="48px"
+            android:layout_centerInParent="true"
+            app:sw_board_color="@color/colorPrimary"
+            app:sw_current_value="50"
+            app:sw_fill_color="@color/colorAccent"
+            app:sw_max_value="100"
+            app:sw_min_value="30" />
 
         <Button
             android:id="@+id/small"
@@ -36,4 +36,10 @@
             android:layout_height="wrap_content"
             android:text="big" />
     </LinearLayout>
-</RelativeLayout>
+
+    <com.example.chenxi1991.shapewidthview.ShapeSelectedColorView
+        android:layout_width="48px"
+        android:layout_height="48px"
+        app:sc_board_color="@color/colorPrimary"
+        app:sc_fill_color="@color/colorAccent" />
+</LinearLayout>
