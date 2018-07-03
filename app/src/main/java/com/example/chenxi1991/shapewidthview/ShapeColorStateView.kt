@@ -142,6 +142,10 @@ class ShapeColorStateView @JvmOverloads constructor(context: Context, attrs: Att
             mPaint.strokeWidth = 1f
             canvas?.drawCircle(x, y, r, mPaint)
         } else {
+            mPaint.style = Paint.Style.FILL
+            mPaint.color = Color.WHITE
+            canvas?.drawCircle(x, y, r, mPaint)
+
             mPaint.style = Paint.Style.STROKE
             mPaint.color = mEdgeColor
             mPaint.strokeWidth = 1f
